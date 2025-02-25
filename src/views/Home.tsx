@@ -1,8 +1,9 @@
 import {FlatList, Text, View} from 'react-native';
 import {useMedia} from '../hooks/apiHooks';
 import MediaListItem from '../components/MediaListItem';
+import {NavigationProp, ParamListBase} from '@react-navigation/native';
 
-const Home = () => {
+const Home = ({navigation}: {navigation: NavigationProp<ParamListBase>}) => {
   const {mediaArray} = useMedia();
 
   console.log(mediaArray);
@@ -10,7 +11,12 @@ const Home = () => {
   return (
     <View>
       <Text>My Media</Text>
-      <FlatList data={mediaArray} renderItem={({item}) => <MediaListItem item={item} />} />
+      <FlatList
+        data={mediaArray}
+        renderItem={({item}) => (
+          <MediaListItem item={item} navigation={navigation} />
+        )}
+      />
     </View>
   );
 };

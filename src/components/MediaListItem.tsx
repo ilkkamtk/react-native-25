@@ -1,16 +1,19 @@
+import {NavigationProp, ParamListBase} from '@react-navigation/native';
 import {MediaItemWithOwner} from 'hybrid-types/DBTypes';
 import {Image, StyleSheet, Text, TouchableOpacity} from 'react-native';
 
 type MediaItemProps = {
   item: MediaItemWithOwner;
+  navigation: NavigationProp<ParamListBase>
 };
 
-const MediaListItem = ({item}: MediaItemProps) => {
+const MediaListItem = ({item, navigation}: MediaItemProps) => {
   return (
     <TouchableOpacity
       style={styles.container}
       onPress={() => {
         console.log(item.title + ' clicked');
+        navigation.navigate('Single');
       }}
     >
       <Image
