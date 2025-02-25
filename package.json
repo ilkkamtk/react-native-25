@@ -12,6 +12,7 @@
   "dependencies": {
     "expo": "~52.0.37",
     "expo-status-bar": "~2.0.1",
+    "hybrid-types": "github:ilkkamtk/hybrid-types",
     "react": "18.3.1",
     "react-native": "0.76.7"
   },
