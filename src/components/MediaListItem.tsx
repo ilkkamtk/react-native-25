@@ -13,7 +13,7 @@ const MediaListItem = ({item, navigation}: MediaItemProps) => {
       style={styles.container}
       onPress={() => {
         console.log(item.title + ' clicked');
-        navigation.navigate('Single');
+        navigation.navigate('Single', {item});
       }}
     >
       <Image
