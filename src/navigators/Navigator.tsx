@@ -6,6 +6,8 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Single from '../views/Single';
 //import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Icon} from '@rneui/base';
+import {useUserContext} from '../hooks/ContextHooks';
+import Login from '../views/Login';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -40,14 +42,21 @@ const TabScreen = () => {
 };
 
 const StackScreen = () => {
+  const {user} = useUserContext();
   return (
     <Stack.Navigator>
-      <Stack.Screen
-        name="Tabs"
-        component={TabScreen}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen name="Single" component={Single} />
+      {user ? (
+        <>
+          <Stack.Screen
+            name="Tabs"
+            component={TabScreen}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen name="Single" component={Single} />
+        </>
+      ) : (
+        <Stack.Screen name="My media app - login" component={Login} />
+      )}
     </Stack.Navigator>
   );
 };

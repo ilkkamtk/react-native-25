@@ -10,7 +10,6 @@ const Home = ({navigation}: {navigation: NavigationProp<ParamListBase>}) => {
 
   return (
     <View>
-      <Text>My Media</Text>
       <FlatList
         data={mediaArray}
         renderItem={({item}) => (
