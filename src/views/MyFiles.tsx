@@ -1,13 +1,13 @@
+import React from 'react';
 import {FlatList, View} from 'react-native';
-import {useMedia} from '../hooks/apiHooks';
 import MediaListItem from '../components/MediaListItem';
+import {useMedia} from '../hooks/apiHooks';
 import {NavigationProp, ParamListBase} from '@react-navigation/native';
+import {useUserContext} from '../hooks/ContextHooks';
 
-const Home = ({navigation}: {navigation: NavigationProp<ParamListBase>}) => {
-  const {mediaArray} = useMedia();
-
-  console.log(mediaArray);
-
+const MyFiles = ({navigation}: {navigation: NavigationProp<ParamListBase>}) => {
+  const {user} = useUserContext();
+  const {mediaArray} = useMedia(user?.user_id);
   return (
     <View>
       <FlatList
@@ -20,4 +20,4 @@ const Home = ({navigation}: {navigation: NavigationProp<ParamListBase>}) => {
   );
 };
 
-export default Home;
+export default MyFiles;

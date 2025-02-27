@@ -26,7 +26,7 @@ const MediaListItem = ({item, navigation}: MediaItemProps) => {
         }}
       />
       <Text>{item.title}</Text>
-      <Text>Uploaded: {new Date(item.created_at).toLocaleString('fi-FI')}</Text>
+      <Text>Uploaded: {new Date(item.created_at).toLocaleString('fi-FI')} by: {item.username}</Text>
     </TouchableOpacity>
   );
 };
