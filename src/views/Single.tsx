@@ -1,7 +1,7 @@
 import {MediaItemWithOwner} from 'hybrid-types/DBTypes';
 import {Image, ScrollView, StyleSheet, Text} from 'react-native';
-import {Video} from 'expo-av';
 import {Card, Icon, ListItem} from '@rneui/base';
+import VideoPlayer from '../components/VideoPlayer';
 
 // TODO: check route prop type
 const Single = ({route}: any) => {
@@ -15,11 +15,7 @@ const Single = ({route}: any) => {
         {item.media_type.includes('image') ? (
           <Image style={styles.image} src={item.filename} />
         ) : (
-          <Video
-            style={styles.image}
-            source={{uri: item.filename}}
-            useNativeControls
-          />
+          <VideoPlayer videoFile={item.filename} style={styles.image} />
         )}
         <ListItem>
           <Icon name="today" />

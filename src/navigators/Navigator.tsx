@@ -4,14 +4,15 @@ import Home from '../views/Home';
 import Profile from '../views/Profile';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Single from '../views/Single';
-//import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Icon} from '@rneui/base';
 import {useUserContext} from '../hooks/ContextHooks';
 import Login from '../views/Login';
 import MyFiles from '../views/MyFiles';
+import Upload from '../views/Upload';
+import {NavigatorType} from '../types/LocalTypes';
 
-const Tab = createBottomTabNavigator();
-const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator<NavigatorType>();
+const Stack = createNativeStackNavigator<NavigatorType>();
 
 const TabScreen = () => {
   return (
@@ -23,21 +24,18 @@ const TabScreen = () => {
             iconName = focused ? 'home-filled' : 'home';
           } else if (route.name === 'My Profile') {
             iconName = 'person';
+          } else if (route.name === 'Upload') {
+            iconName = 'cloud-upload';
           }
-          // You can return any component that you like here!
-          //return <Ionicons name={iconName} size={size} color={color} />;
           return <Icon name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: 'blue',
         tabBarInactiveTintColor: 'gray',
       })}
     >
-      <Tab.Screen
-        name="All Media"
-        component={Home}
-        // options={{headerShown: false}}
-      />
+      <Tab.Screen name="All Media" component={Home} />
       <Tab.Screen name="My Profile" component={Profile} />
+      <Tab.Screen name="Upload" component={Upload} />
     </Tab.Navigator>
   );
 };

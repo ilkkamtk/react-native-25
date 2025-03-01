@@ -17,7 +17,6 @@
     "@rneui/base": "^4.0.0-rc.7",
     "@rneui/themed": "^4.0.0-rc.8",
     "expo": "~52.0.37",
-    "expo-av": "~15.0.2",
     "expo-status-bar": "~2.0.1",
     "expo-video": "~2.0.5",
     "hybrid-types": "github:ilkkamtk/hybrid-types",
@@ -25,7 +24,9 @@
     "react-hook-form": "^7.54.2",
     "react-native": "0.76.7",
     "react-native-safe-area-context": "4.12.0",
-    "react-native-screens": "~4.4.0"
+    "react-native-screens": "~4.4.0",
+    "expo-image-picker": "~16.0.6",
+    "expo-file-system": "~18.0.11"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

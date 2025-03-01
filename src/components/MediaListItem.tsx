@@ -1,13 +1,15 @@
-import {NavigationProp, ParamListBase} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {MediaItemWithOwner} from 'hybrid-types/DBTypes';
 import {Image, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {NavigatorType} from '../types/LocalTypes';
 
 type MediaItemProps = {
   item: MediaItemWithOwner;
-  navigation: NavigationProp<ParamListBase>
 };
 
-const MediaListItem = ({item, navigation}: MediaItemProps) => {
+const MediaListItem = ({item}: MediaItemProps) => {
+  const navigation = useNavigation<NativeStackNavigationProp<NavigatorType>>();
   return (
     <TouchableOpacity
       style={styles.container}
@@ -26,7 +28,10 @@ const MediaListItem = ({item, navigation}: MediaItemProps) => {
         }}
       />
       <Text>{item.title}</Text>
-      <Text>Uploaded: {new Date(item.created_at).toLocaleString('fi-FI')} by: {item.username}</Text>
+      <Text>
+        Uploaded: {new Date(item.created_at).toLocaleString('fi-FI')} by:{' '}
+        {item.username}
+      </Text>
     </TouchableOpacity>
   );
 };

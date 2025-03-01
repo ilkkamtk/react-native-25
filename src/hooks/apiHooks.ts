@@ -15,12 +15,17 @@ import {
   UploadResponse,
   UserResponse,
 } from 'hybrid-types/MessageTypes';
+import * as FileSystem from 'expo-file-system';
+import {useUpdateContext} from './ContextHooks';
 
 const useMedia = (id?: number) => {
   const [mediaArray, setMediaArray] = useState<MediaItemWithOwner[]>([]);
+  const [loading, setLoading] = useState(false);
+  const {update} = useUpdateContext();
   const url = id ? '/media/byuser/' + id : '/media';
   useEffect(() => {
     const getMedia = async () => {
+      setLoading(true);
       try {
         // kaikki mediat ilman omistajan tietoja
         const media = await fetchData<MediaItem[]>(
@@ -41,16 +46,18 @@ const useMedia = (id?: number) => {
           }),
         );
 
-        console.log(mediaWithOwner);
+        mediaWithOwner.reverse();
 
         setMediaArray(mediaWithOwner);
       } catch (error) {
         console.error((error as Error).message);
+      } finally {
+        setLoading(false);
       }
     };
 
     getMedia();
-  }, []);
+  }, [update]);
 
   const postMedia = async (
     file: UploadResponse,
@@ -86,7 +93,7 @@ const useMedia = (id?: number) => {
     );
   };
 
-  return {mediaArray, postMedia};
+  return {mediaArray, postMedia, loading};
 };
 
 const useFile = () => {
@@ -106,7 +113,28 @@ const useFile = () => {
       options,
     );
   };
-  return {postFile};
+  const postExpoFile = async (
+    imageUri: string,
+    token: string,
+  ): Promise<UploadResponse> => {
+    // TODO: display loading indicator
+    const fileResult = await FileSystem.uploadAsync(
+      process.env.EXPO_PUBLIC_UPLOAD_API + '/upload',
+      imageUri,
+      {
+        httpMethod: 'POST',
+        uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+        fieldName: 'file',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      },
+    );
+    // TODO: hide loading indicator
+    return fileResult.body ? JSON.parse(fileResult.body) : null;
+  };
+
+  return {postFile, postExpoFile};
 };
 
 const useAuthentication = () => {
@@ -216,7 +244,9 @@ const useComment = () => {
       process.env.EXPO_PUBLIC_MEDIA_API + '/comments/bymedia/' + media_id,
     );
     // Send a GET request to auth api and add username to all comments
-    const commentsWithUsername = await Promise.all<Comment & {username: string}>(
+    const commentsWithUsername = await Promise.all<
+      Comment & {username: string}
+    >(
       comments.map(async (comment) => {
         const user = await getUserById(comment.user_id);
         return {...comment, username: user.username};
