@@ -1,23 +1,21 @@
 import {StatusBar} from 'expo-status-bar';
-import {SafeAreaView, StyleSheet, Text} from 'react-native';
+import Navigator from './navigators/Navigator';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {UserProvider} from './contexts/UserContext';
+import {UpdateProvider} from './contexts/UpdateContext';
 
 const App = () => {
   console.log('App loaded!');
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={{fontSize: 40}}>Moro!!</Text>
+    <SafeAreaProvider>
+      <UserProvider>
+        <UpdateProvider>
+          <Navigator />
+        </UpdateProvider>
+      </UserProvider>
       <StatusBar style="auto" />
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+};
 
 export default App;

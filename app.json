@@ -13,7 +13,8 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "fi.metropolia.ilkkamtk.hybrid-rn-example25"
     },
     "android": {
       "adaptiveIcon": {
@@ -23,6 +24,7 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": ["expo-video"]
   }
 }
