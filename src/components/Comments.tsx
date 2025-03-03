@@ -1,25 +1,21 @@
-import {Text, View} from 'react-native';
+import {View} from 'react-native';
 import {useComment} from '../hooks/apiHooks';
-import {Comment as CommentType, MediaItemWithOwner} from 'hybrid-types/DBTypes';
+import {MediaItemWithOwner} from 'hybrid-types/DBTypes';
 import Comment from './Comment';
-import {useEffect, useState} from 'react';
+import {useEffect} from 'react';
 import CommentForm from './CommentForm';
 import {useUserContext} from '../hooks/ContextHooks';
 import {Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ListItem} from '@rneui/base';
+import {useCommentStore} from '../store';
 
 type CommentsProps = {
   item: MediaItemWithOwner;
 };
 
 const Comments = ({item}: CommentsProps) => {
-  const [comments, setComments] = useState<
-    | (CommentType & {
-        username: string;
-      })[]
-    | null
-  >(null);
+  const {comments, setComments} = useCommentStore();
   const {getCommentsByMediaId, postComment} = useComment();
   const {user} = useUserContext();
 
@@ -29,7 +25,10 @@ const Comments = ({item}: CommentsProps) => {
       if (data) {
         setComments(data);
       }
-    } catch {}
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+      setComments([]);
+    }
   };
 
   useEffect(() => {

@@ -40,10 +40,8 @@ const MediaListItem = ({item, itemHeight}: MediaItemProps) => {
         <View>
           <Text style={styles.title}>{item.title}</Text>
           <Text style={styles.info}>
-            {item.media_id}
-            Uploaded: {new Date(item.created_at).toLocaleString(
-              'fi-FI',
-            )} by: {item.username}
+            Uploaded: {new Date(item.created_at).toLocaleString('fi-FI')} by:{' '}
+            {item.username}
           </Text>
         </View>
         <Likes item={item} />
