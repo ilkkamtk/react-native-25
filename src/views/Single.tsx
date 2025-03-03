@@ -9,6 +9,9 @@ import {NavigatorType} from '../types/LocalTypes';
 import {Link, useNavigation} from '@react-navigation/native';
 import {useUpdateContext, useUserContext} from '../hooks/ContextHooks';
 import {RouteProp} from '@react-navigation/native';
+import Comments from '../components/Comments';
+import {useState} from 'react';
+import Likes from '../components/Likes';
 
 type SingleProps = {
   route: RouteProp<NavigatorType, 'Single'>;
@@ -20,6 +23,7 @@ const Single = ({route}: SingleProps) => {
   const {triggerUpdate} = useUpdateContext();
   const navigation = useNavigation<NativeStackNavigationProp<NavigatorType>>();
   const {user} = useUserContext();
+  const [expanded, setExpanded] = useState(false);
 
   const handleDelete = async () => {
     try {
@@ -59,19 +63,25 @@ const Single = ({route}: SingleProps) => {
     <ScrollView>
       <Card>
         <Card.Title>{item.title}</Card.Title>
-
+        <Card.Divider />
         {item.media_type.includes('image') ? (
           <Link screen={'Modal'} params={{item}}>
-            <Image style={styles.image} src={item.filename} />
+            <Card.Image style={styles.image} source={{uri: item.filename}} />
           </Link>
         ) : (
           <VideoPlayer videoFile={item.filename} style={styles.image} />
         )}
+
+        <ListItem>
+          <ListItem.Content></ListItem.Content>
+          <ListItem.Content right>
+            <Likes item={item} />
+          </ListItem.Content>
+        </ListItem>
         <ListItem>
           <Icon name="today" />
           <Text>{new Date(item.created_at).toLocaleString('fi-FI')}</Text>
         </ListItem>
-        {/* <Likes item={item} /> */}
         <ListItem>
           <Text>{item.description}</Text>
         </ListItem>
@@ -87,10 +97,34 @@ const Single = ({route}: SingleProps) => {
           <Icon name="image" />
           <Text>{Math.round(item.filesize / 1024)} kB</Text>
         </ListItem>
-        {/* <Comments item={item} /> */}
-        {user && user.user_id === item.user_id && (
-          <Button onPress={handleDelete}>Delete</Button>
-        )}
+
+        <ListItem.Accordion
+          content={
+            <>
+              <Icon name="chat" style={styles.commentIcon} />
+              <ListItem.Content>
+                <ListItem.Title>Comments</ListItem.Title>
+              </ListItem.Content>
+            </>
+          }
+          isExpanded={expanded}
+          onPress={() => {
+            setExpanded(!expanded);
+          }}
+        >
+          <Comments item={item} />
+        </ListItem.Accordion>
+        <ListItem>
+          {user && user.user_id === item.user_id && (
+            <Button
+              color={'secondary'}
+              containerStyle={{width: '100%'}}
+              onPress={handleDelete}
+            >
+              Delete
+            </Button>
+          )}
+        </ListItem>
       </Card>
     </ScrollView>
   );
@@ -98,8 +132,12 @@ const Single = ({route}: SingleProps) => {
 
 const styles = StyleSheet.create({
   image: {
-    height: 400,
     width: '100%',
+    height: 'auto',
+    aspectRatio: 1,
+  },
+  commentIcon: {
+    marginRight: 10,
   },
 });
 

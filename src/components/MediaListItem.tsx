@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import {NavigatorType} from '../types/LocalTypes';
+import Likes from './Likes';
 
 type MediaItemProps = {
   item: MediaItemWithOwner;
@@ -36,11 +37,14 @@ const MediaListItem = ({item, itemHeight}: MediaItemProps) => {
         onError={(e) => console.log(e)}
       />
       <View style={styles.textContainer}>
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.info}>
-          Uploaded: {new Date(item.created_at).toLocaleString('fi-FI')} by:{' '}
-          {item.username}
-        </Text>
+        <View>
+          <Text style={styles.title}>{item.title}</Text>
+          <Text style={styles.info}>
+            Uploaded: {new Date(item.created_at).toLocaleString('fi-FI')} by:{' '}
+            {item.username}
+          </Text>
+        </View>
+        <Likes item={item} />
       </View>
     </TouchableOpacity>
   );
@@ -64,6 +68,9 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: 'rgba(0,0,0,0.5)',
     width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   title: {
     fontSize: 18,

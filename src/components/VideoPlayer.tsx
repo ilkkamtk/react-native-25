@@ -6,7 +6,7 @@ type VideoPlayerProps = {
 
 const VideoPlayer = ({videoFile, ...props}: VideoPlayerProps) => {
   const player = useVideoPlayer(videoFile, (player) => {
-    player.loop = true;
+    player.loop = false;
     player.play();
   });
   return <VideoView player={player} {...props} />;
