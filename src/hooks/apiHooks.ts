@@ -145,7 +145,10 @@ const useFile = () => {
       },
     );
     // TODO: hide loading indicator
-    return fileResult.body ? JSON.parse(fileResult.body) : null;
+    if (!fileResult.body) {
+      throw new Error("Upload failed: missing response body");
+    }
+    return JSON.parse(fileResult.body);
   };
 
   return {postFile, postExpoFile};
