@@ -75,18 +75,17 @@ const Likes = ({item}: {item: MediaItemWithOwner}) => {
         return;
       }
       // If user has liked the media, delete the like. Otherwise, post the like.
-      if (likeState.userLike) {
-        // delete the like and dispatch the new like count to the state. Dispatching is already done in the getLikes and getLikeCount functions.
-        await deleteLike(likeState.userLike.like_id, token);
-        // optionally use getLikes() & getLikeCount() here to update all likes from db
-        likeDispatch({type: 'like', like: null});
-        likeDispatch({type: 'setLikeCount', count: likeState.count - 1});
-      } else {
-        // post the like and dispatch the new like count to the state. Dispatching is already done in the getLikes and getLikeCount functions.
-        await postLike(item.media_id, token);
-        getLikes();
-        getLikeCount();
-      }
+        if (likeState.userLike) {
+          // delete the like and refresh the like count from the server to ensure consistent updates.
+          await deleteLike(likeState.userLike.like_id, token);
+          likeDispatch({type: 'like', like: null});
+          getLikeCount();
+        } else {
+          // post the like and refresh the like count from the server.
+          await postLike(item.media_id, token);
+          getLikes();
+          getLikeCount();
+        }
     } catch (e) {
       console.log('like error', (e as Error).message);
     }
