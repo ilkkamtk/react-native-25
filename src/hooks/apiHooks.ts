@@ -261,15 +261,15 @@ const useComment = () => {
       process.env.EXPO_PUBLIC_MEDIA_API + '/comments/bymedia/' + media_id,
     );
     // Send a GET request to auth api and add username to all comments
-    const commentsWithUsername = await Promise.all<
-      Comment & {username: string}
-    >(
-      comments.map(async (comment) => {
-        const user = await getUserById(comment.user_id);
-        return {...comment, username: user.username};
-      }),
-    );
-    return commentsWithUsername;
+    return await Promise.all<
+          Comment & {username: string}
+        >(
+          comments.map(async (comment) => {
+            const user = await getUserById(comment.user_id);
+            return {...comment, username: user.username};
+          }),
+        );
+
   };
 
   return {postComment, getCommentsByMediaId};
