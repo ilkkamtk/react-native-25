@@ -18,7 +18,7 @@ export const useCommentStore = create<CommentStore>((set) => ({
       comments: [
         ...state.comments,
         {
-          comment_id: state.comments.length + 1, // This is a temporary solution
+          comment_id: comment.comment_id, // This is a temporary solution
           comment_text: comment.comment_text,
           user_id: comment.user_id,
           media_id: comment.media_id,

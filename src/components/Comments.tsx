@@ -26,7 +26,7 @@ const Comments = ({item}: CommentsProps) => {
         setComments(data);
       }
     } catch (error) {
-      console.error('Error fetching comments:', error);
+      console.log('Error fetching comments:', error);
       setComments([]);
     }
   };
