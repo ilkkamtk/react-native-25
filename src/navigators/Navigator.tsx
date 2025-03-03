@@ -10,6 +10,7 @@ import Login from '../views/Login';
 import MyFiles from '../views/MyFiles';
 import Upload from '../views/Upload';
 import {NavigatorType} from '../types/LocalTypes';
+import Modal from '../views/Modal';
 
 const Tab = createBottomTabNavigator<NavigatorType>();
 const Stack = createNativeStackNavigator<NavigatorType>();
@@ -53,6 +54,7 @@ const StackScreen = () => {
           />
           <Stack.Screen name="Single" component={Single} />
           <Stack.Screen name="My Files" component={MyFiles} />
+          <Stack.Screen name="Modal" component={Modal} />
         </>
       ) : (
         <Stack.Screen name="My media app - login" component={Login} />

@@ -25,4 +25,5 @@ export type NavigatorType = {
   Single: {item: MediaItemWithOwner};
   'My Files': undefined;
   'My media app - login': undefined;
+  Modal: {item: MediaItemWithOwner};
 };

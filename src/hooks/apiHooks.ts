@@ -25,6 +25,7 @@ const useMedia = (id?: number) => {
   const url = id ? '/media/byuser/' + id : '/media';
   useEffect(() => {
     const getMedia = async () => {
+      console.log('getting media');
       setLoading(true);
       try {
         // kaikki mediat ilman omistajan tietoja
@@ -57,7 +58,7 @@ const useMedia = (id?: number) => {
     };
 
     getMedia();
-  }, [update]);
+  }, [update, url]);
 
   const postMedia = async (
     file: UploadResponse,
@@ -93,7 +94,20 @@ const useMedia = (id?: number) => {
     );
   };
 
-  return {mediaArray, postMedia, loading};
+  const deleteMedia = async (media_id: number, token: string) => {
+    // Send a DELETE request to /media/:media_id with the token in the Authorization header.
+    const options = {
+      method: 'DELETE',
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    return await fetchData<MessageResponse>(
+      process.env.EXPO_PUBLIC_MEDIA_API + '/media/' + media_id,
+      options,
+    );
+  };
+  return {mediaArray, postMedia, deleteMedia, loading};
 };
 
 const useFile = () => {
