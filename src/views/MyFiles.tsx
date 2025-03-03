@@ -11,7 +11,7 @@ const MyFiles = () => {
     <View>
       <FlatList
         data={mediaArray}
-        renderItem={({item}) => <MediaListItem item={item} />}
+        renderItem={({item}) => <MediaListItem item={item} itemHeight={200} />}
       />
     </View>
   );
