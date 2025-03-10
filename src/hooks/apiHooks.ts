@@ -5,7 +5,7 @@ import {
   MediaItemWithOwner,
   UserWithNoPassword,
 } from 'hybrid-types/DBTypes';
-import {useEffect, useState, useCallback} from 'react';
+import {useEffect, useState} from 'react';
 import {fetchData} from '../lib/functions';
 import {Credentials, RegisterCredentials} from '../types/LocalTypes';
 import {
@@ -18,51 +18,53 @@ import {
 import * as FileSystem from 'expo-file-system';
 import {useUpdateContext} from './ContextHooks';
 
-const useMedia = (list: boolean = false, id?: number) => {
+const useMedia = (fetchMedia: boolean = false, id?: number) => {
   const [mediaArray, setMediaArray] = useState<MediaItemWithOwner[]>([]);
   const [loading, setLoading] = useState(false);
   const {update} = useUpdateContext();
 
   // Memoize the getMedia function to prevent recreating it on each render
-  const getMedia = useCallback(async () => {
-    console.log('getting media');
-    setLoading(true);
-    try {
-      // kaikki mediat ilman omistajan tietoja
-      const url = id ? '/media/byuser/' + id : '/media';
-      const media = await fetchData<MediaItem[]>(
-        process.env.EXPO_PUBLIC_MEDIA_API + url,
-      );
-      // haetaan omistajat id:n perusteella
-      const mediaWithOwner: MediaItemWithOwner[] = await Promise.all(
-        media.map(async (item) => {
-          const owner = await fetchData<UserWithNoPassword>(
-            process.env.EXPO_PUBLIC_AUTH_API + '/users/' + item.user_id,
-          );
-
-          const mediaItem: MediaItemWithOwner = {
-            ...item,
-            username: owner.username,
-          };
-          return mediaItem;
-        }),
-      );
-
-      mediaWithOwner.reverse();
-
-      setMediaArray(mediaWithOwner);
-    } catch (error) {
-      console.error((error as Error).message);
-    } finally {
-      setLoading(false);
-    }
-  }, [id]); // Only depend on id parameter
 
   useEffect(() => {
-    if (list) {
-      getMedia();
+    if (!fetchMedia) {
+      return;
     }
-  }, [list, update, getMedia]); // Now getMedia is stable between renders
+
+    const getMedia = async () => {
+      console.log('getting media');
+      setLoading(true);
+      try {
+        // kaikki mediat ilman omistajan tietoja
+        const url = id ? '/media/byuser/' + id : '/media';
+        const media = await fetchData<MediaItem[]>(
+          process.env.EXPO_PUBLIC_MEDIA_API + url,
+        );
+        // haetaan omistajat id:n perusteella
+        const mediaWithOwner: MediaItemWithOwner[] = await Promise.all(
+          media.map(async (item) => {
+            const owner = await fetchData<UserWithNoPassword>(
+              process.env.EXPO_PUBLIC_AUTH_API + '/users/' + item.user_id,
+            );
+
+            const mediaItem: MediaItemWithOwner = {
+              ...item,
+              username: owner.username,
+            };
+            return mediaItem;
+          }),
+        );
+
+        mediaWithOwner.reverse();
+
+        setMediaArray(mediaWithOwner);
+      } catch (error) {
+        console.error((error as Error).message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getMedia();
+  }, [fetchMedia, update, id]);
 
   const postMedia = async (
     file: UploadResponse,
