@@ -8,19 +8,19 @@ import {UpdateContext} from '../contexts/UpdateContext';
 
 const useUserContext = () => {
   const context = useContext(UserContext);
-  if (!context) {
+  if (context == null) {
     throw new Error('useUserContext must be used within an UserProvider');
   }
 
   return context;
 };
 
-const useUpdateContext = () => {
+export const useUpdateContext = () => {
   const context = useContext(UpdateContext);
-  if (!context) {
+  if (context == null) {
     throw new Error('useUpdateContext must be used within an UpdateProvider');
   }
   return context;
 };
 
-export {useUserContext, useUpdateContext};
+export {useUserContext};

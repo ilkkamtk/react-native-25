@@ -1,5 +1,5 @@
 import {MediaItemWithOwner} from 'hybrid-types/DBTypes';
-import {Alert, Image, ScrollView, StyleSheet, Text} from 'react-native';
+import {Alert, ScrollView, StyleSheet, Text} from 'react-native';
 import {Button, Card, Icon, ListItem} from '@rneui/base';
 import VideoPlayer from '../components/VideoPlayer';
 import {useMedia} from '../hooks/apiHooks';
@@ -115,15 +115,16 @@ const Single = ({route}: SingleProps) => {
           <Comments item={item} />
         </ListItem.Accordion>
         <ListItem>
-          {user && user.user_id === item.user_id && (
-            <Button
-              color={'secondary'}
-              containerStyle={{width: '100%'}}
-              onPress={handleDelete}
-            >
-              Delete
-            </Button>
-          )}
+          {user &&
+            (user.user_id === item.user_id || user?.level_name === 'Admin') && (
+              <Button
+                color={'secondary'}
+                containerStyle={{width: '100%'}}
+                onPress={handleDelete}
+              >
+                Delete
+              </Button>
+            )}
         </ListItem>
       </Card>
     </ScrollView>

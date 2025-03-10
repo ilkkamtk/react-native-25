@@ -5,7 +5,7 @@ import {
   MediaItemWithOwner,
   UserWithNoPassword,
 } from 'hybrid-types/DBTypes';
-import {useEffect, useState} from 'react';
+import {useEffect, useState, useCallback} from 'react';
 import {fetchData} from '../lib/functions';
 import {Credentials, RegisterCredentials} from '../types/LocalTypes';
 import {
@@ -18,47 +18,52 @@ import {
 import * as FileSystem from 'expo-file-system';
 import {useUpdateContext} from './ContextHooks';
 
-const useMedia = (id?: number) => {
+const useMedia = (fetchMedia: boolean = false, id?: number) => {
   const [mediaArray, setMediaArray] = useState<MediaItemWithOwner[]>([]);
   const [loading, setLoading] = useState(false);
   const {update} = useUpdateContext();
-  const url = id ? '/media/byuser/' + id : '/media';
+
+  // Memoize the getMedia function to prevent recreating it on each render
+  const getMedia = useCallback(async () => {
+    console.log('getting media');
+    setLoading(true);
+    try {
+      // kaikki mediat ilman omistajan tietoja
+      const url = id ? '/media/byuser/' + id : '/media';
+      const media = await fetchData<MediaItem[]>(
+        process.env.EXPO_PUBLIC_MEDIA_API + url,
+      );
+      // haetaan omistajat id:n perusteella
+      const mediaWithOwner: MediaItemWithOwner[] = await Promise.all(
+        media.map(async (item) => {
+          const owner = await fetchData<UserWithNoPassword>(
+            process.env.EXPO_PUBLIC_AUTH_API + '/users/' + item.user_id,
+          );
+
+          const mediaItem: MediaItemWithOwner = {
+            ...item,
+            username: owner.username,
+          };
+          return mediaItem;
+        }),
+      );
+
+      mediaWithOwner.reverse();
+
+      setMediaArray(mediaWithOwner);
+    } catch (error) {
+      console.error((error as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  }, [id]); // Only depend on id parameter
+
   useEffect(() => {
-    const getMedia = async () => {
-      console.log('getting media');
-      setLoading(true);
-      try {
-        // kaikki mediat ilman omistajan tietoja
-        const media = await fetchData<MediaItem[]>(
-          process.env.EXPO_PUBLIC_MEDIA_API + url,
-        );
-        // haetaan omistajat id:n perusteella
-        const mediaWithOwner: MediaItemWithOwner[] = await Promise.all(
-          media.map(async (item) => {
-            const owner = await fetchData<UserWithNoPassword>(
-              process.env.EXPO_PUBLIC_AUTH_API + '/users/' + item.user_id,
-            );
-
-            const mediaItem: MediaItemWithOwner = {
-              ...item,
-              username: owner.username,
-            };
-            return mediaItem;
-          }),
-        );
-
-        mediaWithOwner.reverse();
-
-        setMediaArray(mediaWithOwner);
-      } catch (error) {
-        console.error((error as Error).message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
+    if (!fetchMedia) {
+      return;
+    }
     getMedia();
-  }, [update, url]);
+  }, [fetchMedia, update, getMedia]); // Now getMedia is stable between renders
 
   const postMedia = async (
     file: UploadResponse,
@@ -146,7 +151,7 @@ const useFile = () => {
     );
     // TODO: hide loading indicator
     if (!fileResult.body) {
-      throw new Error("Upload failed: missing response body");
+      throw new Error('Upload failed: missing response body');
     }
     return JSON.parse(fileResult.body);
   };
@@ -261,15 +266,12 @@ const useComment = () => {
       process.env.EXPO_PUBLIC_MEDIA_API + '/comments/bymedia/' + media_id,
     );
     // Send a GET request to auth api and add username to all comments
-    return await Promise.all<
-          Comment & {username: string}
-        >(
-          comments.map(async (comment) => {
-            const user = await getUserById(comment.user_id);
-            return {...comment, username: user.username};
-          }),
-        );
-
+    return await Promise.all<Comment & {username: string}>(
+      comments.map(async (comment) => {
+        const user = await getUserById(comment.user_id);
+        return {...comment, username: user.username};
+      }),
+    );
   };
 
   return {postComment, getCommentsByMediaId};

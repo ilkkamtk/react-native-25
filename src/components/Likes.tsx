@@ -2,7 +2,7 @@ import {Like, MediaItemWithOwner} from 'hybrid-types/DBTypes';
 import {useEffect, useReducer} from 'react';
 import {useLike} from '../hooks/apiHooks';
 import {View} from 'react-native';
-import {Button, Text} from '@rneui/base';
+import {Button} from '@rneui/base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type LikeState = {
@@ -46,9 +46,9 @@ const Likes = ({item}: {item: MediaItemWithOwner}) => {
       const userLike = await getUserLike(item.media_id, token);
       //console.log('getLikes userLike', userLike);
       likeDispatch({type: 'like', like: userLike});
-    } catch (e) {
+    } catch {
       likeDispatch({type: 'like', like: null});
-      console.log('get user like error', (e as Error).message);
+      // console.log('get user like error', (e as Error).message);
     }
   };
 
@@ -75,17 +75,17 @@ const Likes = ({item}: {item: MediaItemWithOwner}) => {
         return;
       }
       // If user has liked the media, delete the like. Otherwise, post the like.
-        if (likeState.userLike) {
-          // delete the like and refresh the like count from the server to ensure consistent updates.
-          await deleteLike(likeState.userLike.like_id, token);
-          likeDispatch({type: 'like', like: null});
-          getLikeCount();
-        } else {
-          // post the like and refresh the like count from the server.
-          await postLike(item.media_id, token);
-          getLikes();
-          getLikeCount();
-        }
+      if (likeState.userLike) {
+        // delete the like and refresh the like count from the server to ensure consistent updates.
+        await deleteLike(likeState.userLike.like_id, token);
+        likeDispatch({type: 'like', like: null});
+        getLikeCount();
+      } else {
+        // post the like and refresh the like count from the server.
+        await postLike(item.media_id, token);
+        getLikes();
+        getLikeCount();
+      }
     } catch (e) {
       console.log('like error', (e as Error).message);
     }
