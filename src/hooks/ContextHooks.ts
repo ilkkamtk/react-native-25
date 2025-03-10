@@ -15,12 +15,12 @@ const useUserContext = () => {
   return context;
 };
 
-const useUpdateContext = () => {
+export const useUpdateContext = () => {
   const context = useContext(UpdateContext);
-  if (!context) {
+  if (context === null) {
     throw new Error('useUpdateContext must be used within an UpdateProvider');
   }
   return context;
 };
 
-export {useUserContext, useUpdateContext};
+export {useUserContext};
