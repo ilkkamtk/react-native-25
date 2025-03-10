@@ -1,5 +1,5 @@
 import {MediaItemWithOwner} from 'hybrid-types/DBTypes';
-import {Alert, Image, ScrollView, StyleSheet, Text} from 'react-native';
+import {Alert, ScrollView, StyleSheet, Text} from 'react-native';
 import {Button, Card, Icon, ListItem} from '@rneui/base';
 import VideoPlayer from '../components/VideoPlayer';
 import {useMedia} from '../hooks/apiHooks';
