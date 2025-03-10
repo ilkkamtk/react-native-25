@@ -17,7 +17,7 @@ const useUserContext = () => {
 
 export const useUpdateContext = () => {
   const context = useContext(UpdateContext);
-  if (context === null) {
+  if (context == null) {
     throw new Error('useUpdateContext must be used within an UpdateProvider');
   }
   return context;
