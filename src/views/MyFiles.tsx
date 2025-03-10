@@ -6,7 +6,7 @@ import {useUserContext} from '../hooks/ContextHooks';
 
 const MyFiles = () => {
   const {user} = useUserContext();
-  const {mediaArray} = useMedia(user?.user_id);
+  const {mediaArray} = useMedia(true, user?.user_id);
   return (
     <View>
       <FlatList

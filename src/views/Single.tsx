@@ -115,15 +115,16 @@ const Single = ({route}: SingleProps) => {
           <Comments item={item} />
         </ListItem.Accordion>
         <ListItem>
-          {user && user.user_id === item.user_id && (
-            <Button
-              color={'secondary'}
-              containerStyle={{width: '100%'}}
-              onPress={handleDelete}
-            >
-              Delete
-            </Button>
-          )}
+          {(user && user.user_id === item.user_id) ||
+            (user?.level_name === 'Admin' && (
+              <Button
+                color={'secondary'}
+                containerStyle={{width: '100%'}}
+                onPress={handleDelete}
+              >
+                Delete
+              </Button>
+            ))}
         </ListItem>
       </Card>
     </ScrollView>
